@@ -1,0 +1,102 @@
+{
+  "pipelineSpec": {
+    "components": {
+      "comp-reverse": {
+        "executorLabel": "exec-reverse",
+        "inputDefinitions": {
+          "parameters": {
+            "a": {
+              "type": "STRING"
+            }
+          }
+        },
+        "outputDefinitions": {
+          "parameters": {
+            "after": {
+              "type": "STRING"
+            },
+            "before": {
+              "type": "STRING"
+            }
+          }
+        }
+      }
+    },
+    "deploymentSpec": {
+      "executors": {
+        "exec-reverse": {
+          "container": {
+            "args": [
+              "--a",
+              "{{$.inputs.parameters['a']}}",
+              "----output-paths",
+              "{{$.outputs.parameters['before'].output_file}}",
+              "{{$.outputs.parameters['after'].output_file}}"
+            ],
+            "command": [
+              "sh",
+              "-ec",
+              "program_path=$(mktemp)\nprintf \"%s\" \"$0\" > \"$program_path\"\npython3 -u \"$program_path\" \"$@\"\n",
+              "def reverse(a):\n  return a, a[::-1]\n\ndef _serialize_str(str_value: str) -> str:\n    if not isinstance(str_value, str):\n        raise TypeError('Value \"{}\" has type \"{}\" instead of str.'.format(str(str_value), str(type(str_value))))\n    return str_value\n\nimport argparse\n_parser = argparse.ArgumentParser(prog='Reverse', description='')\n_parser.add_argument(\"--a\", dest=\"a\", type=str, required=True, default=argparse.SUPPRESS)\n_parser.add_argument(\"----output-paths\", dest=\"_output_paths\", type=str, nargs=2)\n_parsed_args = vars(_parser.parse_args())\n_output_files = _parsed_args.pop(\"_output_paths\", [])\n\n_outputs = reverse(**_parsed_args)\n\n_output_serializers = [\n    _serialize_str,\n    _serialize_str,\n\n]\n\nimport os\nfor idx, output_file in enumerate(_output_files):\n    try:\n        os.makedirs(os.path.dirname(output_file))\n    except OSError:\n        pass\n    with open(output_file, 'w') as f:\n        f.write(_output_serializers[idx](_outputs[idx]))\n"
+            ],
+            "image": "python:3.7"
+          }
+        }
+      }
+    },
+    "pipelineInfo": {
+      "name": "basic-pipeline"
+    },
+    "root": {
+      "dag": {
+        "tasks": {
+          "reverse": {
+            "cachingOptions": {
+              "enableCache": true
+            },
+            "componentRef": {
+              "name": "comp-reverse"
+            },
+            "inputs": {
+              "parameters": {
+                "a": {
+                  "runtimeValue": {
+                    "constantValue": {
+                      "stringValue": "aabb"
+                    }
+                  }
+                }
+              }
+            },
+            "taskInfo": {
+              "name": "reverse"
+            }
+          }
+        }
+      },
+      "inputDefinitions": {
+        "parameters": {
+          "a": {
+            "type": "STRING"
+          },
+          "b": {
+            "type": "STRING"
+          }
+        }
+      }
+    },
+    "schemaVersion": "2.0.0",
+    "sdkVersion": "kfp-1.7.2"
+  },
+  "runtimeConfig": {
+    "gcsOutputDirectory": "gs://doit-vertex-ai-demo/basic-pipeine",
+    "parameters": {
+      "a": {
+        "stringValue": "stres"
+      },
+      "b": {
+        "stringValue": "sed"
+      }
+    }
+  }
+}
