@@ -10,7 +10,7 @@ from kfp.v2.dsl import Metrics
 
 from kfp.v2 import compiler
 
-@component(output_component_file="add_component.yaml") 
+@component() 
 def concat(a: str, b: str) -> str:
   return a + b
 
