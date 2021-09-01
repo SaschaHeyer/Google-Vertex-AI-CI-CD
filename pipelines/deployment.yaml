@@ -1,4 +1,10 @@
 steps:
+  # Install dependencies
+  - name: python
+    entrypoint: pip
+    args: ["install", "-r", "requirements.txt", "--user"]
+
+  # Compile pipeline
   - name: 'python'
     entrypoint: 'python'
     args: ['pipelines/pipeline.py']
