@@ -1,0 +1,5 @@
+steps:
+  - name: 'python'
+    entrypoint: 'python'
+    args: ['pipeline.py']
+    id: 'Compile Pipeline'
