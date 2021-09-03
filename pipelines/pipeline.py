@@ -18,17 +18,12 @@ def concat(a: str, b: str) -> str:
 def reverse(a: str)->NamedTuple("outputs", [("before", str), ("after", str)]):
   return a, a[::-1]
 
-@component
-def deployment(a: str)-> str:
-  return "test"
-
 @pipeline(name="basic-pipeline",
 description="A simple intro pipeline", 
               pipeline_root='gs://doit-vertex-demo/basic-pipeine')
 def basic_pipeline(a: str='stres', b: str='sed'):
     concat_task = concat(a, b)
     reverse_task = reverse(concat_task.output)
-    deployment_task = deployment(concat_task.output)
 
 if __name__ == '__main__':
     compiler.Compiler().compile(
