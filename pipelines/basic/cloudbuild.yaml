@@ -2,12 +2,12 @@ steps:
   # Install dependencies
   - name: python
     entrypoint: pip
-    args: ["install", "-r", "pipelines/requirements.txt", "--user"]
+    args: ["install", "-r", "pipelines/basic/requirements.txt", "--user"]
 
   # Compile pipeline
   - name: 'python'
     entrypoint: 'python'
-    args: ['pipelines/pipeline.py']
+    args: ['pipelines/basic/pipeline.py']
     id: 'compile'
 
   # Upload compiled pipeline to GCS.
