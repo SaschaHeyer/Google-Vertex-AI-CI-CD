@@ -4,10 +4,6 @@ from typing import NamedTuple
 
 from kfp.v2.dsl import pipeline
 from kfp.v2.dsl import component
-
-from kfp.v2.dsl import Output
-from kfp.v2.dsl import Metrics
-
 from kfp.v2 import compiler
 
 @component() 
