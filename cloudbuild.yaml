@@ -7,7 +7,7 @@ steps:
   # Compile pipeline
   - name: 'python'
     entrypoint: 'python'
-    args: ['pipelines/basic/pipeline.py']
+    args: ['pipeline.py']
     id: 'compile'
 
   # Upload compiled pipeline to GCS.
